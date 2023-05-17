@@ -52,6 +52,6 @@ FORM add_events.  " se llama en el main program
   APPEND gs_events TO  gt_events.
 ENDFORM.
 "defino el form donde esta lo que quiero escribir
-FORM top_of_page.
-  WRITE: / 'Hora de ejecucion: ', sy-uzeit EVIRONMENT TIME FORMAT.    "mostrara en el titulo del alv la hora del sistema
+FORM top_of_page. "dentro de esta subrutina vamos a 'dibujar todo lo que queremos que aparezca en el titulo
+  WRITE: / 'Hora de ejecucion: ', sy-uzeit ENVIRONMENT TIME FORMAT.    "mostrara en el titulo del alv la hora del sistema
 ENDFORM.

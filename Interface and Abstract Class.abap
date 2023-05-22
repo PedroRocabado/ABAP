@@ -126,7 +126,7 @@ START-OF-SELECTION.
 **por las clases hijas. Esto facilita la creación de una jerarquía de clases y promueve la reutilización de código.
 
 **2)Pueden contener métodos concretos: Además de los métodos abstractos, las clases abstractas pueden contener métodos con implementaciones concretas. 
-Esto permite definir un comportamiento predeterminado que las clases hijas pueden heredar y, si es necesario, redefinir.
+**Esto permite definir un comportamiento predeterminado que las clases hijas pueden heredar y, si es necesario, redefinir.
 
 **3)Pueden tener atributos y propiedades: Las clases abstractas pueden contener atributos y propiedades que pueden ser heredados por las clases hijas.
 **Esto permite definir características comunes y compartir datos entre las clases de la jerarquía.
@@ -154,7 +154,7 @@ Esto permite definir un comportamiento predeterminado que las clases hijas puede
 **Se centran exclusivamente en definir la firma de los métodos.
 
 **2)No pueden proporcionar implementaciones predeterminadas: Las interfaces no pueden contener implementaciones concretas de métodos. 
-Esto significa que todas las implementaciones deben estar presentes en las clases que implementan la interfaz.
+**Esto significa que todas las implementaciones deben estar presentes en las clases que implementan la interfaz.
 
 *-------------------------------------------------------------------------------------------------------------------------------------------------------------*
 **Conclusion final:

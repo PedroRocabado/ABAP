@@ -1,7 +1,7 @@
 DATA:
       strtab  TYPE TABLE OF string,
       line    TYPE string,
-      datatab TYPE TABLE OF zfica_013e,
+      datatab TYPE TABLE OF zfica_013e, "tabla de donde sacaremos los datos a enviar por mail
       wa      LIKE LINE OF datatab,
       timest  TYPE string,
       cap     TYPE string,
@@ -14,17 +14,17 @@ FIELD-SYMBOLS
 
 SELECT * INTO TABLE datatab FROM zfica_013e.
 LOOP AT datatab INTO wa.
-  DO.
+  DO. "recorremos columna a columna de la tabla en cuestion
     CLEAR aux.
     ASSIGN COMPONENT sy-index OF STRUCTURE wa TO <fs>.
     IF sy-subrc IS NOT INITIAL.
       EXIT.
     ENDIF.
     MOVE <fs> TO aux.
-    CONCATENATE line aux INTO line SEPARATED BY space.
+    CONCATENATE line aux INTO line SEPARATED BY space. "y lo vamos acumulando en aux
   ENDDO.
-  CONCATENATE line cl_abap_char_utilities=>cr_lf INTO line.
-  APPEND line TO strtab.
+  CONCATENATE line cl_abap_char_utilities=>cr_lf INTO line. "al final le agregamos un salto de carro
+  APPEND line TO strtab. "y lo guardamos en nuestra tabla tipo string
   CLEAR line.
 ENDLOOP.
 
@@ -32,11 +32,6 @@ DATA: lt_lines TYPE TABLE OF string,
       lv_line  TYPE string,
       lv_lin   TYPE xstring,
       cr_lf    TYPE xstring.
-
-" Genera el contenido del archivo CSV
-
-" Añade más líneas según sea necesario
-" ...
 
 " Convertir el contenido a un binario
 DATA: lt_content_bin TYPE solix_tab,
@@ -57,14 +52,8 @@ DATA: lv_param  TYPE zparametro,
 CONSTANTS:
       lc_req TYPE zreq VALUE 'CONTR_ER'.
 
-*" Convierte la tabla a un string
-*LOOP AT lt_lines INTO lv_line.
-*  MOVE lv_line TO lv_lin.
-*  MOVE cl_abap_char_utilities=>cr_lf TO cr_lf.
-*  CONCATENATE lv_text lv_lin cr_lf INTO lv_text IN BYTE MODE.
-*ENDLOOP.
-LOOP AT strtab INTO line.
-  CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
+LOOP AT strtab INTO line.   "recorremos la tabla que creamos 
+  CALL FUNCTION 'SCMS_STRING_TO_XSTRING' "y la transformamos a xstring
     EXPORTING
       text = line
     IMPORTING
@@ -72,10 +61,10 @@ LOOP AT strtab INTO line.
   CONCATENATE lv_text linex INTO lv_text IN BYTE MODE.
 ENDLOOP.
 
-MOVE 'Contenido del cuerpo del correo' TO lv_header.
+MOVE 'Contenido del cuerpo del correo' TO lv_header. "le agregamos la cabecera del mail
 APPEND lv_header TO lt_header.
 
-" Convierte el string a binario
+" Convierte el xstring a binario
 CALL FUNCTION 'SCMS_XSTRING_TO_BINARY'
   EXPORTING
     buffer        = lv_text
@@ -86,10 +75,10 @@ CALL FUNCTION 'SCMS_XSTRING_TO_BINARY'
 MOVE lv_bin_length TO lv_length.
 
 " Crear el documento
-DATA: lo_document TYPE REF TO cl_document_bcs.
+DATA: lo_document TYPE REF TO cl_document_bcs. "objeto que tiene los metodos para mandar el mail
 
 lo_document = cl_document_bcs=>create_document(
-                i_type    = 'RAW'
+                i_type    = 'RAW'   "aqui podemos elegir tambien XLS o HTM
                 i_text    = lt_header
                 i_subject = 'Asunto del correo'
               ).
@@ -99,11 +88,16 @@ lo_document->add_attachment(
   i_attachment_type    = 'TXT' " Tipo de archivo adjunto (TXT)
   i_attachment_subject = 'Mi archivo adjunto' " Asunto del adjunto
   i_attachment_size    = lv_length " Tamaño del adjunto
-  i_att_content_hex    = lt_content_bin " Contenido binario
+  i_att_content_hex    = lt_content_bin " Contenido de la tabla pasado a binario
 ).
+"ACLARACION IMPORTANTE: uso el paramtro i_att_content_hex porque al trabajar en hexadecimal, admite
+"mas caracteres que 255. El error que me estaban reportando cuando hice esto, era justamente
+"porque la tabla que estaba intentando mandar por mail tenia mas de 255 caracteres por linea.
+"si se diera elc caso de que la tabla a enviar tenga menos de 255, se puede usar el parametro
+" i_att_context_text
 
 " Enviar el correo
-DATA: l_send_request TYPE REF TO cl_bcs.
+DATA: l_send_request TYPE REF TO cl_bcs.  "objeto que envia el mail
 
 l_send_request = cl_bcs=>create_persistent( ).
 
@@ -119,7 +113,7 @@ CALL METHOD l_send_request->set_sender
           t_param = lt_param.
 
 "// Agrego los receptores del MAIL
-LOOP AT lt_param INTO ls_param.
+LOOP AT lt_param INTO ls_param. "para el caso que me toco debia enviar el mail a ciertas casillas parametrizadas
 
   CLEAR lv_mail.
   lv_mail = ls_param-zvalor.

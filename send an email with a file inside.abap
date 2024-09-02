@@ -12,6 +12,7 @@ c_tab(1) TYPE c VALUE
 FIELD-SYMBOLS
                <fs> TYPE ANY.
 
+               
 SELECT * INTO TABLE datatab FROM zfica_013e.
 LOOP AT datatab INTO wa.
   DO. "recorremos columna a columna de la tabla en cuestion

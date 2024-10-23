@@ -1,3 +1,6 @@
+"Lo interesante de este ALV es que puedo definir un TYPES y va a funicionar igual
+"Es mas simple que los otros
+
 DATA: lt_pa0001 TYPE STANDARD TABLE OF pa0001,  "tabla a mostrar
       lo_alv    TYPE REF TO cl_salv_table.    "objeto
 

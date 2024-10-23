@@ -48,7 +48,7 @@ ENDFORM.
 "para agregar un titulo al ALV
 FORM add_events.  " se llama en el main program
   gs_events-name = 'TOP_OF_PAGE'.    "el nombre del evento, por el TOP_OF_PAGE, que es el titulo
-  gs_events-form = 'TOP_OFPAGE'.     "el perform al que va a llamar para sacar el titulo del alv
+  gs_events-form = 'TOP_OF_PAGE'.     "el perform al que va a llamar para sacar el titulo del alv
   APPEND gs_events TO  gt_events.
 ENDFORM.
 "defino el form donde esta lo que quiero escribir
